@@ -15,11 +15,12 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.TextView;
 
 public class MainActivity extends Activity {
 	private final String SITE_URL = "http://whyisthetowerorange.com/";
-	private final String DEBUG_TAG = "HttpExample";
+	private final String DEBUG_TAG = "WITTO";
 	private TextView status;
 
     @Override
@@ -29,23 +30,28 @@ public class MainActivity extends Activity {
         
         status = (TextView) findViewById(R.id.status);
         
+        writeTowerStatus();
+    }
+    
+    private void writeTowerStatus() {
+        /* Check the status of the network */
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnected()) {
         	new DownloadWebpageTask().execute(SITE_URL);
         } else {
-        	status.setText("No nework connection available.");
+        	status.setText("No network connection available.");
         }
     }
     
-    /* This is performed in a seperate thread from the UI */
+    /* This is performed in a separate thread from the UI */
     private class DownloadWebpageTask extends AsyncTask<String, Void, String> {
     	@Override
     	protected String doInBackground(String... urls) {
     		try {
     			return downloadUrl(urls[0]);
     		} catch (IOException e) {
-    			return "Unable to retrieve web page. URL may be invalid.";
+    			return "Unable to retrieve web page.";
     		}
     	}
     	
@@ -99,6 +105,17 @@ public class MainActivity extends Activity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+    	switch (item.getItemId()) {
+    		case R.id.refresh:
+    			writeTowerStatus();
+    			return true;
+    		default:
+    			return super.onOptionsItemSelected(item);
+    	}
     }
     
 }

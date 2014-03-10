@@ -13,6 +13,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,6 +31,8 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         
         status = (TextView) findViewById(R.id.status);
+        status.setMovementMethod(LinkMovementMethod.getInstance());
+        status.setLinkTextColor(getResources().getColorStateList(R.color.white));
         
         writeTowerStatus();
     }
@@ -57,8 +61,17 @@ public class MainActivity extends Activity {
     	
     	@Override
     	protected void onPostExecute(String result) {
-    		status.setText(result);
+    		status.setText(Html.fromHtml(result));
     	}
+    }
+    
+    private String removeTags(String html, String[] tags) {
+    	for (String tag : tags) {
+    		html = html.replaceAll("<\\s*"+tag+"[^>]*>", "");
+    		html = html.replaceAll("</"+tag+">", "");
+    	}
+    	
+    	return html;
     }
     
     /* Convert the URL stream to a string */
@@ -80,13 +93,11 @@ public class MainActivity extends Activity {
     	
     	BufferedReader in = new BufferedReader(new InputStreamReader(stream));
     	
-    	String output = "";
     	String line;
 
     	/* Find the line with the tower status */
     	while ((line = in.readLine()) != null) {
     		if (line.contains("<p class=\"reason\">")) {
-    			output = line;
     			break;
     		}
     	}
@@ -94,9 +105,10 @@ public class MainActivity extends Activity {
     	stream.close();
     	
     	/* Remove the HTML tags */
-    	output = output.replaceAll("<[^>]*>", "");
+    	line = removeTags(line, new String[]{"p", "font"});
     	
-    	return output;
+    	return line;
+//    	return text;
     }
     
 

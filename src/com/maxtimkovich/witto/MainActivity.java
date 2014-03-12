@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -29,6 +30,9 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        
+        ActionBar actionBar = getActionBar();
+        actionBar.setDisplayShowTitleEnabled(false);
         
         status = (TextView) findViewById(R.id.status);
         status.setMovementMethod(LinkMovementMethod.getInstance());

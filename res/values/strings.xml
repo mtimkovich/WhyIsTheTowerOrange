@@ -3,6 +3,5 @@
 
     <string name="app_name">Why is the tower orange?</string>
     <string name="refresh">Refresh</string>
-    <string name="tower_status">Connection Error</string>
 
 </resources>

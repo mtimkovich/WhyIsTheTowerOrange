@@ -19,6 +19,7 @@ import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.Window;
 import android.widget.TextView;
 
 public class MainActivity extends Activity {
@@ -30,9 +31,9 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        
-        ActionBar actionBar = getActionBar();
-        actionBar.setDisplayShowTitleEnabled(false);
+
+//        ActionBar actionBar = getActionBar();
+//        actionBar.setDisplayShowTitleEnabled(false);
         
         status = (TextView) findViewById(R.id.status);
         status.setMovementMethod(LinkMovementMethod.getInstance());
@@ -112,7 +113,6 @@ public class MainActivity extends Activity {
     	line = removeTags(line, new String[]{"p", "font"});
     	
     	return line;
-//    	return text;
     }
     
 

@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.PublicKey;
 
 import android.app.ActionBar;
 import android.app.Activity;
@@ -19,25 +20,28 @@ import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 public class MainActivity extends Activity {
 	private final String SITE_URL = "http://whyisthetowerorange.com/";
 	private final String DEBUG_TAG = "WITTO";
+
 	private TextView status;
+	private ProgressBar loading;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        ActionBar actionBar = getActionBar();
-//        actionBar.setDisplayShowTitleEnabled(false);
-        
         status = (TextView) findViewById(R.id.status);
         status.setMovementMethod(LinkMovementMethod.getInstance());
         status.setLinkTextColor(getResources().getColorStateList(R.color.white));
+        
+        loading = (ProgressBar) findViewById(R.id.progress);
         
         writeTowerStatus();
     }
@@ -54,25 +58,41 @@ public class MainActivity extends Activity {
     }
     
     /* This is performed in a separate thread from the UI */
-    private class DownloadWebpageTask extends AsyncTask<String, Void, String> {
+    private class DownloadWebpageTask extends AsyncTask<String, Boolean, String> {
+    	@Override
+    	protected void onPreExecute() {
+    		loading.setVisibility(View.VISIBLE);
+    	}
+
     	@Override
     	protected String doInBackground(String... urls) {
     		try {
-    			return downloadUrl(urls[0]);
+    			publishProgress(false);
+    			String result = downloadUrl(urls[0]);
+    			publishProgress(true);
+
+    			return result;
     		} catch (IOException e) {
     			return "Unable to retrieve web page.";
     		}
     	}
     	
+    	protected void onProgressUpdate(Boolean... finished) {
+    		loading.setIndeterminate(!finished[0]);
+    	}
+    	
     	@Override
     	protected void onPostExecute(String result) {
+    		loading.setVisibility(View.GONE);
+
     		status.setText(Html.fromHtml(result));
     	}
     }
     
+    /* Remove unwanted HTML tags */
     private String removeTags(String html, String[] tags) {
     	for (String tag : tags) {
-    		html = html.replaceAll("<\\s*"+tag+"[^>]*>", "");
+    		html = html.replaceAll("<"+tag+"[^>]*>", "");
     		html = html.replaceAll("</"+tag+">", "");
     	}
     	

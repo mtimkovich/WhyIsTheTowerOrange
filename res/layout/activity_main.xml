@@ -16,8 +16,7 @@
         android:layout_height="fill_parent"
         android:layout_gravity="center"
         android:gravity="center"
-        style="@android:style/Widget.ProgressBar.Small"
-        android:indeterminate="true"
+        style="@android:style/Widget.ProgressBar"
         />
 
 	<TextView

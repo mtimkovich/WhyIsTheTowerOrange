@@ -90,7 +90,7 @@ public class MainActivity extends Activity {
     private String removeTags(String html, String[] tags) {
     	for (String tag : tags) {
     		html = html.replaceAll("<"+tag+"[^>]*>", "");
-    		html = html.replaceAll("</"+tag+">", "");
+    		html = html.replaceAll("</"+tag+"\\s*>", "");
     	}
     	
     	return html;

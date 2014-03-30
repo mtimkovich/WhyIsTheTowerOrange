@@ -116,18 +116,24 @@ public class MainActivity extends Activity {
     	BufferedReader in = new BufferedReader(new InputStreamReader(stream));
     	
     	String line;
+    	Boolean found = false;
 
     	/* Find the line with the tower status */
     	while ((line = in.readLine()) != null) {
     		if (line.contains("<p class=\"reason\">")) {
+    			found = true;
     			break;
     		}
     	}
     	
     	stream.close();
     	
-    	/* Remove the HTML tags */
-    	line = removeTags(line, new String[]{"p", "font"});
+    	if (found) {
+            /* Remove the HTML tags */
+            line = removeTags(line, new String[]{"p", "font"});
+    	} else {
+    		line = "Error reading from website";
+    	}
     	
     	return line;
     }
